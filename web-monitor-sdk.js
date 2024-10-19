@@ -21,7 +21,8 @@ const blackMsgList = [
     'NetworkError when attempting to fetch resource.', //同上(Firefox)
     "Uncaught SecurityError: Failed to execute 'toBlob' on 'HTMLCanvasElement': Tainted canvases may not be exported.", //"@openreplay/tracker"内部报错
     'SecurityError: The operation is insecure.', //"@openreplay/tracker"内部报错
-    "project doesn't exist or is not active, key: HBCHl9YKVOCMbbxZC9us" //"@openreplay/tracker"内部报错
+    "project doesn't exist or is not active, key: HBCHl9YKVOCMbbxZC9us", //"@openreplay/tracker"内部报错
+    'Fetch is aborted' //对话流onmessage中的controller.abort()触发
 ]
 function getBrowser() {
     const userAgent = navigator.userAgent
