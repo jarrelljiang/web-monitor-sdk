@@ -42,7 +42,10 @@ export default function catchInjectorPlugin(options = {}) {
             handleCode(tryCatchRegex, tryParamRegex, 2)
 
             // 返回修改后的代码
-            return transformedCode
+            return {
+                code: transformedCode,
+                map: null
+            }
         }
     }
 }

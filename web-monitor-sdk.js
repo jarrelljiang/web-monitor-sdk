@@ -5,13 +5,6 @@ if (typeof require === 'function' && typeof exports === 'object' && typeof modul
 } else {
     window.Monitor = Monitor
 }
-//测试环境、灰度环境、带端口的环境(本地环境)不上报
-function notReport() {
-    return (
-        ['test.mip', 'test2.mip', 'gray.mip', 'graymip'].some((host) => window.location.href.includes(host)) ||
-        window.location.port
-    )
-}
 //不用进行上报的错误信息
 const blackMsgList = [
     '用户未登录',
@@ -50,7 +43,8 @@ function getWholeErrString(err) {
     }
 }
 function Monitor(option) {
-    if (notReport()) {
+    //只监控生产环境
+    if (!option.isProd) {
         window.catchError = function () {}
         return
     }
