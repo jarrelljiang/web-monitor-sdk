@@ -42,9 +42,10 @@ function getWholeErrString(err) {
         return JSON.stringify(err, Object.getOwnPropertyNames(err))
     }
 }
-function Monitor(option) {
+let queue = []
+export function Monitor(option) {
     //只监控生产环境
-    if (!option.isProd) {
+    if (import.meta.env.MODE != 'production' && import.meta.env.MODE != 'prod') {
         window.catchError = function () {}
         return
     }
@@ -119,7 +120,20 @@ function Monitor(option) {
                 return
             }
             let errObj = JSON.parse(getWholeErrString(err))
-            fetch(option.domain, {
+            //同一个报错在3秒内只上报一次
+            let current = queue.find((item) => item.msg === msg && item.location === location)
+            if (current && +new Date() - current.time < 3000) {
+                return
+            }
+            if (!current) {
+                queue.push({ msg, location, time: +new Date() })
+                setTimeout(() => {
+                    let index = queue.findIndex((item) => item.msg === msg && item.location === location)
+                    queue.splice(index, 1)
+                }, 3000)
+            }
+
+            fetch('https://api-monitor.pages.dev/monitor', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
