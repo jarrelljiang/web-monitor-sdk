@@ -11,11 +11,13 @@ const blackMsgList = [
     '该账号已在其他地方登录,请重新登录',
     JSON.stringify({ stack: '(cancel)' }),
     'Failed to fetch', //使用fetch(url)不通且没catch时，会触发unhandledrejection，message为Failed to fetch(Chrome)
+    'Load failed', //同上(Safari)
     'NetworkError when attempting to fetch resource.', //同上(Firefox)
     "Uncaught SecurityError: Failed to execute 'toBlob' on 'HTMLCanvasElement': Tainted canvases may not be exported.", //"@openreplay/tracker"内部报错
     'SecurityError: The operation is insecure.', //"@openreplay/tracker"内部报错
     "project doesn't exist or is not active, key: HBCHl9YKVOCMbbxZC9us", //"@openreplay/tracker"内部报错
-    'Fetch is aborted' //对话流onmessage中的controller.abort()触发
+    'Fetch is aborted', //对话流onmessage中的controller.abort()触发
+    'ResizeObserver loop completed with undelivered notifications.' //antd中table组件中的ResizeObserver API触发
 ]
 function getBrowser() {
     const userAgent = navigator.userAgent
