@@ -1,6 +1,6 @@
 {
     "name": "@donson/web-monitor-sdk",
-    "version": "2.1.8",
+    "version": "2.6.0",
     "description": "web-monitor-sdk",
     "main": "web-monitor-sdk.js",
     "author": "jarrell"

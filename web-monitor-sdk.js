@@ -44,7 +44,6 @@ function getWholeErrString(err) {
         return JSON.stringify(err, Object.getOwnPropertyNames(err))
     }
 }
-let queue = []
 export function Monitor(option) {
     //只监控生产环境
     if (import.meta.env.MODE != 'production' && import.meta.env.MODE != 'prod') {
@@ -117,23 +116,20 @@ export function Monitor(option) {
              */
             return err.error || err.reason || err
         }
+        let lastReportTimeMap = new Map() // 存储每个唯一报错的最后上报时间
         const msgTip = function (msg, location, errType, err) {
             if (!msg || !err || blackMsgList.some((item) => msg.includes(item))) {
                 return
             }
             let errObj = JSON.parse(getWholeErrString(err))
             //同一个报错在3秒内只上报一次
-            let current = queue.find((item) => item.msg === msg && item.location === location)
-            if (current && +new Date() - current.time < 3000) {
+            const uniqueKey = `${msg}-${location}` // 组合唯一的错误标识
+            const currentTime = +new Date()
+            if (lastReportTimeMap.has(uniqueKey) && currentTime - lastReportTimeMap.get(uniqueKey) < 3000) {
                 return
             }
-            if (!current) {
-                queue.push({ msg, location, time: +new Date() })
-                setTimeout(() => {
-                    let index = queue.findIndex((item) => item.msg === msg && item.location === location)
-                    queue.splice(index, 1)
-                }, 3000)
-            }
+            // 记录当前上报时间
+            lastReportTimeMap.set(uniqueKey, currentTime)
 
             fetch('https://api-monitor.pages.dev/monitor', {
                 method: 'POST',
